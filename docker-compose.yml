@@ -1,0 +1,14 @@
+version: '3.1'
+services:
+  python-prototypes:
+    container_name: python_prototypes
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/app/
+    ports:
+      - 5000:5000
+    environment:
+      TZ: Asia/Tokyo
+    tty: true
