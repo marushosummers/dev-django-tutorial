@@ -14,7 +14,7 @@ django = "*"
 python_version = "3.9"
 
 [scripts]
-start = "python djangosnippets/manage.py runserver 0.0.0.0:8000"
+start = "python manage.py runserver 0.0.0.0:8000"
 test = "python -m unittest discover -v"
 format = "autopep8 -ivr ."
 lint = "flake8 --show-source ."
