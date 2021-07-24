@@ -15,4 +15,4 @@ class TopPageViewTest(TestCase):
     def test_top_returns_expected_content(self):
         request = HttpRequest()
         response = top(request)
-        self.assertEqual(b"Hello World", response.content)
+        self.assertEqual(b"Hello, world!", response.content)
