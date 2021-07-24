@@ -1,29 +1,49 @@
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from django.http import HttpRequest
 from django.urls import resolve
 from snippets.views import top, snippet_new, snippet_edit, snippet_detail
 
 
-class TopPageViewTest(TestCase):
-    def test_top_returns_200(self):
-        request = HttpRequest()
-        response = top(request)
-        self.assertEqual(200, response.status_code)
+from django.contrib.auth import get_user_model
 
+from snippets.models import Snippet
 
-    def test_top_returns_expected_content(self):
-        request = HttpRequest()
-        response = top(request)
-        self.assertEqual(b"Hello, world!", response.content)
-
+UserModel = get_user_model()
 class TopPageTest(TestCase):
-    def test_top_returns_200(self):
+    def test_top_page_returns_200_and_expected_title(self):
         response = self.client.get("/")
-        self.assertEqual(200, response.status_code)
+        self.assertContains(response, "Djangoスニペット", status_code=200)
 
-    def test_top_returns_expected_content(self):
+    def test_top_page_uses_expected_template(self):
         response = self.client.get("/")
-        self.assertEqual(b"Hello, world!", response.content)
+        self.assertTemplateUsed(response, "snippets/top.html")
+
+class TopPageRenderSnippetsTest(TestCase):
+    def setUp(self):
+        self.user = UserModel.objects.create(
+            username="test_user",
+            email="test@example.com",
+            password="top_secret_pass0001",
+        )
+        self.snippet = Snippet.objects.create(
+            title="title1",
+            code="print('hello')",
+            description="description1",
+            created_by=self.user,
+        )
+
+    def test_should_return_snippet_title(self):
+        request = RequestFactory().get("/")
+        request.user = self.user
+        response = top(request)
+        self.assertContains(response, self.snippet.title)
+
+    def test_should_return_username(self):
+        request = RequestFactory().get("/")
+        request.user = self.user
+        response = top(request)
+        self.assertContains(response, self.user.username)
+
 
 class CreateSnippetTest(TestCase):
     def test_should_resolve_snippet_new(self):
