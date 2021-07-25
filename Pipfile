@@ -9,6 +9,8 @@ flake8 = "*"
 
 [packages]
 django = "*"
+django-bootstrap5 = "*"
+django-pygments-renderer = "*"
 
 [requires]
 python_version = "3.9"
